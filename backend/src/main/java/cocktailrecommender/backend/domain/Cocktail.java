@@ -1,9 +1,10 @@
 package cocktailrecommender.backend.domain;
 
 public class Cocktail {
-    static private int cocktail_id;
+    private Integer cocktail_id;
     private String cocktail_name;
 
+    // Constructor
     public Cocktail(String cocktail_name) {
         this.cocktail_name = cocktail_name;
     }
@@ -16,11 +17,11 @@ public class Cocktail {
         this.cocktail_name = cocktail_name;
     }
 
-    public static int getCocktail_id() {
+    public int getCocktail_id() {
         return cocktail_id;
     }
 
-    public static void setCocktail_id(int cocktail_id) {
-        Cocktail.cocktail_id = cocktail_id;
+    public void setCocktail_id(int cocktail_id) {
+        this.cocktail_id = cocktail_id;
     }
 }
