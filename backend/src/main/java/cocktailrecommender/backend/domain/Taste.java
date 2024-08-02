@@ -1,26 +1,22 @@
 package cocktailrecommender.backend.domain;
 
+import jakarta.persistence.*;
+import java.util.Set;
+
+@Entity
 public class Taste {
-    private int taste_id;
-    private String taste_name;
 
-    public Taste(String taste_name) {
-        this.taste_name = taste_name;
-    }
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long tasteId;
 
-    public int getTaste_id() {
-        return taste_id;
-    }
+    private String name;
 
-    public void setTaste_id(int taste_id) {
-        this.taste_id = taste_id;
-    }
+    @OneToMany(mappedBy = "taste")
+    private Set<CocktailTaste> cocktailTastes;
 
-    public String getTaste_name() {
-        return taste_name;
-    }
+    @OneToMany(mappedBy = "taste")
+    private Set<IngredientTaste> ingredientTastes;
 
-    public void setTaste_name(String taste_name) {
-        this.taste_name = taste_name;
-    }
+    // getters and setters
 }
