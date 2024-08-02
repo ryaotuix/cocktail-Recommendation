@@ -1,6 +1,12 @@
 package cocktailrecommender.backend.domain;
 
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class Alcohol {
+    @Id
     private int alcohol_id;
     private String alcohol_name;
 

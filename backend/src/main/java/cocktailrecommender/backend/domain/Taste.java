@@ -1,6 +1,13 @@
 package cocktailrecommender.backend.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+@Entity
 public class Taste {
+    @Id
+    @GeneratedValue
     private int taste_id;
     private String taste_name;
 

@@ -1,16 +1,26 @@
 package cocktailrecommender.backend.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
 import java.util.Map;
 
+@Entity
 public class User {
     private String username;
     private String password;
+    @Id
+    @GeneratedValue
     private Integer user_id;
-    private Map<Taste, Integer> tastePreference;
 
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public User() {
+
     }
 
     public String getUsername() {
@@ -37,11 +47,4 @@ public class User {
         this.user_id = user_id;
     }
 
-    public Map<Taste, Integer> getTastePreference() {
-        return tastePreference;
-    }
-
-    public void setTastePreference(Map<Taste, Integer> tastePreference) {
-        this.tastePreference = tastePreference;
-    }
 }
