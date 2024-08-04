@@ -34,6 +34,10 @@ public class UserService {
         }
         return false;
     }
+    public boolean login(UserDTO userDTO){
+        Optional<User> userOptional = userRepository.findByEmail(userDTO.getEmail());
+        return userOptional.isPresent() && userOptional.get().getPassword().equals(userDTO.getPassword());
+    }
 
     //Modify User Password, needed to be encrypted
     public boolean changePassword(Long userId, String password){
