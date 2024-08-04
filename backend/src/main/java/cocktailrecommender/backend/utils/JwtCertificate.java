@@ -18,9 +18,9 @@ public class JwtCertificate {
     private long jwtExpirationInMillis = 86400000;
 
     //토큰 생성
-    public String generateToken(String id){
+    public String generateToken(String email){
         return Jwts.builder()
-                .setSubject(id)
+                .setSubject(email)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationInMillis))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
