@@ -52,8 +52,8 @@ public class UserServiceTest {
         user1.setPassword("pw1");
         user2.setPassword("pw2");
 
-        assertTrue(userService.createUser(UserDTO.from(user1)));
-        assertFalse(userService.createUser(UserDTO.from(user2)));
+        assertTrue(userService.createUser(UserDTO.UserRequestDTO.from(user1)));
+        assertFalse(userService.createUser(UserDTO.UserRequestDTO.from(user2)));
     }
     @Test
     void delete(){
@@ -76,9 +76,9 @@ public class UserServiceTest {
 
         users.add(user1); users.add(user2);
 
-        userService.createUser(UserDTO.from(user1));
-        userService.createUser(UserDTO.from(user2));
-        userService.createUser(UserDTO.from(user3));
+        userService.createUser(UserDTO.UserRequestDTO.from(user1));
+        userService.createUser(UserDTO.UserRequestDTO.from(user2));
+        userService.createUser(UserDTO.UserRequestDTO.from(user3));
 
         assertTrue(userService.deleteUser(3L));
         List<User> remainUsers = userRepository.findAll();

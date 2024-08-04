@@ -22,9 +22,9 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> signUp(@RequestBody UserDTO userDTO){
+    public ResponseEntity<String> signUp(@RequestBody UserDTO.UserRequestDTO userRequestDTO){
 
-        if(userService.createUser(userDTO)){
+        if(userService.createUser(userRequestDTO)){
             return ResponseEntity.ok("Register Succeeded");
         }
 
@@ -32,13 +32,13 @@ public class UserController {
                 .body("Register Failed");
     }
     @GetMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserDTO userDTO){
+    public ResponseEntity<String> login(@RequestBody UserDTO.UserRequestDTO userRequestDTO){
         JSONObject responseJson = new JSONObject();
 
         //when login success
-        if(userService.login(userDTO)){
+        if(userService.login(userRequestDTO)){
             JwtCertificate jwtCertificate = new JwtCertificate();
-            String token = jwtCertificate.generateToken(userDTO.getEmail());
+            String token = jwtCertificate.generateToken(userRequestDTO.getEmail());
             responseJson.put("token",token);
             return ResponseEntity.ok(responseJson.toString());
         }else{

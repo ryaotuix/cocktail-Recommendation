@@ -18,11 +18,11 @@ public class UserService {
     private final UserRepository userRepository;
 
     //Sign Up
-    public boolean createUser(UserDTO userDTO){
-        if (userRepository.findByEmail(userDTO.getEmail()).isPresent()){
+    public boolean createUser(UserDTO.UserRequestDTO userRequestDTO){
+        if (userRepository.findByEmail(userRequestDTO.getEmail()).isPresent()){
             return false;
         }
-        userRepository.save(userDTO.toUser());
+        userRepository.save(userRequestDTO.toUser());
         return true;
     }
     //Delete
@@ -34,9 +34,9 @@ public class UserService {
         }
         return false;
     }
-    public boolean login(UserDTO userDTO){
-        Optional<User> userOptional = userRepository.findByEmail(userDTO.getEmail());
-        return userOptional.isPresent() && userOptional.get().getPassword().equals(userDTO.getPassword());
+    public boolean login(UserDTO.UserRequestDTO userRequestDTO){
+        Optional<User> userOptional = userRepository.findByEmail(userRequestDTO.getEmail());
+        return userOptional.isPresent() && userOptional.get().getPassword().equals(userRequestDTO.getPassword());
     }
 
     //Modify User Password, needed to be encrypted
