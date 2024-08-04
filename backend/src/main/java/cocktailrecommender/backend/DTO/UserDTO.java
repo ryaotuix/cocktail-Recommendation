@@ -13,29 +13,39 @@ public class UserDTO {
     @Getter
     @Setter
     @AllArgsConstructor
-    public static class UserRequestDTO{
+    public static class UserRequestDTO {
         private String email;
         private String name;
         private String password;
-        public User toUser(){
+
+        public User toUser() {
             User user = new User();
             user.setEmail(email);
             user.setName(name);
             user.setPassword(password);
             return user;
         }
-        public static UserRequestDTO from(User user){
-            return new UserRequestDTO(user.getEmail(), user.getEmail(), user.getPassword());
+
+        public static UserRequestDTO from(User user) {
+            return new UserRequestDTO(user.getEmail(), user.getName(), user.getPassword());
         }
     }
+
     @Getter
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class UserResponseDTO{
+    public static class UserResponseDTO {
         private Long userId;
         private String email;
         private String name;
         private String password;
+
+        public UserResponseDTO(User user) {
+            this.userId = user.getUserId();
+            this.email = user.getEmail();
+            this.name = user.getName();
+            this.password = user.getPassword();
+        }
     }
 }

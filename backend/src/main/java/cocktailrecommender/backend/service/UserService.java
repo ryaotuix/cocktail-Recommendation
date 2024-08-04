@@ -8,41 +8,40 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-
 @Service
 public class UserService {
+    private final UserRepository userRepository;
+
+    @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-    @Autowired
-    private final UserRepository userRepository;
 
-    //Sign Up
-    public boolean createUser(UserDTO.UserRequestDTO userRequestDTO){
-        if (userRepository.findByEmail(userRequestDTO.getEmail()).isPresent()){
+    public boolean createUser(UserDTO.UserRequestDTO userRequestDTO) {
+        if (userRepository.findByEmail(userRequestDTO.getEmail()).isPresent()) {
             return false;
         }
         userRepository.save(userRequestDTO.toUser());
         return true;
     }
-    //Delete
-    public boolean deleteUser(Long userId){
+
+    public boolean deleteUser(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
-        if(userOptional.isPresent()){
+        if (userOptional.isPresent()) {
             userRepository.deleteById(userOptional.get().getUserId());
             return true;
         }
         return false;
     }
-    public boolean login(UserDTO.UserRequestDTO userRequestDTO){
+
+    public boolean login(UserDTO.UserRequestDTO userRequestDTO) {
         Optional<User> userOptional = userRepository.findByEmail(userRequestDTO.getEmail());
         return userOptional.isPresent() && userOptional.get().getPassword().equals(userRequestDTO.getPassword());
     }
 
-    //Modify User Password, needed to be encrypted
-    public boolean changePassword(Long userId, String password){
+    public boolean changePassword(Long userId, String password) {
         Optional<User> userOptional = userRepository.findById(userId);
-        if(userOptional.isPresent()){
+        if (userOptional.isPresent()) {
             User user = userOptional.get();
             user.setPassword(password);
             userRepository.save(user);
@@ -50,14 +49,20 @@ public class UserService {
         }
         return false;
     }
-    public boolean changeName(Long userId, String name){
+
+    public boolean changeName(Long userId, String name) {
         Optional<User> userOptional = userRepository.findById(userId);
-        if(userOptional.isPresent()){
+        if (userOptional.isPresent()) {
             User user = userOptional.get();
             user.setName(name);
             userRepository.save(user);
             return true;
         }
         return false;
+    }
+
+    public UserDTO.UserResponseDTO findByEmail(String email) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        return userOptional.map(UserDTO.UserResponseDTO::new).orElse(null);
     }
 }
