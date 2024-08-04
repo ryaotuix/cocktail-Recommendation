@@ -9,7 +9,6 @@ public class Ingredient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ingredientId;
-
     private String name;
 
     @OneToMany(mappedBy = "ingredient")

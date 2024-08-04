@@ -1,6 +1,7 @@
 package cocktailrecommender.backend.domain;
 
 import jakarta.persistence.*;
+
 import java.util.Set;
 
 @Entity
@@ -13,18 +14,18 @@ public class User {
     private String password;
     private String name;
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getEmail() {
-        return email;
-    }
 
     @OneToMany(mappedBy = "user")
     private Set<UserIngredient> userIngredients;
 
+    @OneToMany(mappedBy = "user")
+    private Set<UserTaste> userTastes;
+
     // getters and setters
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public void setUserId(Long userId) {
         this.userId = userId;
@@ -41,6 +42,8 @@ public class User {
     public void setUserIngredients(Set<UserIngredient> userIngredients) {
         this.userIngredients = userIngredients;
     }
+
+    public String getEmail() {return email;}
 
     public Long getUserId() {
         return userId;
