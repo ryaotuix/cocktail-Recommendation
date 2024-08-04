@@ -5,15 +5,6 @@ import cocktailrecommender.backend.domain.User;
 public class UserDTO {
     private Long userId;
     private String email;
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
     private String name;
     private String password;
     public UserDTO(){}
@@ -23,6 +14,14 @@ public class UserDTO {
         this.email = email;
         this.name = name;
         this.password = password;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public Long getUserId() {
@@ -58,6 +57,7 @@ public class UserDTO {
         userDTO.setPassword(user.getPassword());
         return userDTO;
     }
+
     public User toUser(){
         User user = new User();
         user.setEmail(this.email);
