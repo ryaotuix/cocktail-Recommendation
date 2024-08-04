@@ -29,6 +29,9 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	//json
 	implementation 'org.json:json:20210307'
+	//lombok
+	compileOnly 'org.projectlombok:lombok:1.18.28'
+	annotationProcessor 'org.projectlombok:lombok:1.18.28'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
