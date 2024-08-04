@@ -36,6 +36,14 @@ public class JwtCertificate {
             return false;
         }
     }
+    // 토큰에서 이메일 가져오기
+    public String extractEmail(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getSubject();
+    }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
