@@ -86,4 +86,56 @@ public class UserServiceTest {
         assertEquals(user1.getEmail(),remainUsers.get(0).getEmail());
         assertEquals(user2.getEmail(),remainUsers.get(1).getEmail());
     }
+    @Test
+    void login(){
+        User user1 = new User();
+        user1.setEmail("user1@user.com");
+        user1.setName("user1");
+        user1.setPassword("pw1");
+        user1.setUserId(1L);
+        userRepository.save(user1);
+
+        UserDTO.UserRequestDTO userRequestDTO = new UserDTO.UserRequestDTO("user1@user.com","user1","pw1");
+        assertTrue(userService.login(userRequestDTO));
+    }
+    @Test
+    void changePW(){
+        User user1 = new User();
+        user1.setEmail("user1@user.com");
+        user1.setName("user1");
+        user1.setPassword("pw1");
+        user1.setUserId(1L);
+        userRepository.save(user1);
+        userService.changePassword(1L, "newPW");
+        assertEquals("newPW",userService.findByEmail("user1@user.com").getPassword());
+    }
+    @Test
+    void changeName(){
+        User user1 = new User();
+        user1.setEmail("user1@user.com");
+        user1.setName("user1");
+        user1.setPassword("pw1");
+        user1.setUserId(1L);
+        userRepository.save(user1);
+        userService.changeName(1L, "newName");
+        assertEquals("newName",userService.findByEmail("user1@user.com").getName());
+    }
+    @Test
+    void findByEmail(){
+        User user1 = new User();
+        User user2 = new User();
+        user1.setEmail("user1@user.com");
+        user1.setName("user1");
+        user1.setPassword("pw1");
+
+        user2.setEmail("user2@user.com");
+        user2.setName("user2");
+        user2.setPassword("pw2");
+
+        userRepository.save(user1);
+        userRepository.save(user2);
+
+        assertEquals(user2.getEmail(),userService.findByEmail("user2@user.com").getEmail());
+
+    }
 }

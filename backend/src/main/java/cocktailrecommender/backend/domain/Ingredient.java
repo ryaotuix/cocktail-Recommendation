@@ -1,9 +1,16 @@
 package cocktailrecommender.backend.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.Set;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class Ingredient {
 
     @Id
@@ -20,5 +27,11 @@ public class Ingredient {
     @OneToMany(mappedBy = "ingredient")
     private Set<IngredientTaste> ingredientTastes;
 
-    // getters and setters
+    public Ingredient(String name){
+        this.name = name;
+    }
+    public Ingredient(Long id, String name){
+        this.ingredientId = id;
+        this.name = name;
+    }
 }

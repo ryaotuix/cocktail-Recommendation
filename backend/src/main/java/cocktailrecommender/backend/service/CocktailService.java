@@ -31,7 +31,11 @@ public class CocktailService {
             return true;
         }
     }
-
+    public Optional<CocktailDTO.CocktailDTOWithId> findCocktailByName(String name){
+        return cocktailRepository.findByName(name).map(
+                cocktail -> CocktailDTO.CocktailDTOWithId.from(cocktail)
+        );
+    }
     //find cocktails by name
     public List<CocktailDTO.CocktailDTOWithId> findCocktailsByName(String name){
         return cocktailRepository.findByNameContaining(name).stream()

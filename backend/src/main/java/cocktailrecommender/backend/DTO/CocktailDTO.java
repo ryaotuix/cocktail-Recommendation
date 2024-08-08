@@ -30,5 +30,12 @@ public class CocktailDTO {
                     cocktail.getCocktailId(),cocktail.getName(), cocktail.getHowToMake()
             );
         }
+        public Cocktail to(){
+            Cocktail cocktail = new Cocktail();
+            cocktail.setCocktailId(this.cocktailId);
+            cocktail.setName(this.name);
+            cocktail.setHowToMake(this.howToMake);
+            return cocktail;
+        }
     }
 }
