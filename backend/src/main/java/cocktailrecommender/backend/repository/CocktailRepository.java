@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface CocktailRepository extends JpaRepository<Cocktail, Long>{
     Optional<Cocktail> findByName(String name);
-    List<Cocktail> findByNameContaining(String name);
+    List<Cocktail> findByNameContainingIgnoreCase(String name);
     List<Cocktail> findAll();
 }
