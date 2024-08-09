@@ -15,6 +15,6 @@ public class IngredientDTO {
         return new Ingredient(this.id, this.name);
     }
     public static IngredientDTO from(Ingredient ingredient){
-        return new IngredientDTO(ingredient.getIngredientId(),ingredient.getName());
+        return new IngredientDTO(ingredient.getIngredientId(), ingredient.getName());
     }
 }

@@ -17,31 +17,32 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public boolean createUser(UserDTO.UserRequestDTO userRequestDTO) {
-        if (userRepository.findByEmail(userRequestDTO.getEmail()).isPresent()) {
+    //Sign Up
+    public boolean createUser(UserDTO.UserRequestDTO userRequestDTO){
+        if (userRepository.findByEmail(userRequestDTO.getEmail()).isPresent()){
             return false;
         }
         userRepository.save(userRequestDTO.toUser());
         return true;
     }
-
-    public boolean deleteUser(Long userId) {
+    //Delete
+    public boolean deleteUser(Long userId){
         Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isPresent()) {
+        if(userOptional.isPresent()){
             userRepository.deleteById(userOptional.get().getUserId());
             return true;
         }
         return false;
     }
-
-    public boolean login(UserDTO.UserRequestDTO userRequestDTO) {
+    public boolean login(UserDTO.UserRequestDTO userRequestDTO){
         Optional<User> userOptional = userRepository.findByEmail(userRequestDTO.getEmail());
         return userOptional.isPresent() && userOptional.get().getPassword().equals(userRequestDTO.getPassword());
     }
 
-    public boolean changePassword(Long userId, String password) {
+    //Modify User Password, needed to be encrypted
+    public boolean changePassword(Long userId, String password){
         Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isPresent()) {
+        if(userOptional.isPresent()){
             User user = userOptional.get();
             user.setPassword(password);
             userRepository.save(user);
@@ -49,10 +50,9 @@ public class UserService {
         }
         return false;
     }
-
-    public boolean changeName(Long userId, String name) {
+    public boolean changeName(Long userId, String name){
         Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isPresent()) {
+        if(userOptional.isPresent()){
             User user = userOptional.get();
             user.setName(name);
             userRepository.save(user);

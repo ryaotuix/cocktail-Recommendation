@@ -27,7 +27,9 @@ public class CocktailDTO {
         private String howToMake;
         public static CocktailDTOWithId from(Cocktail cocktail){
             return new CocktailDTOWithId(
-                    cocktail.getCocktailId(),cocktail.getName(), cocktail.getHowToMake()
+                    cocktail.getCocktailId(),
+                    cocktail.getName(),
+                    cocktail.getHowToMake()
             );
         }
         public Cocktail to(){
