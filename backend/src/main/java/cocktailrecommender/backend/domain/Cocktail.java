@@ -24,5 +24,7 @@ public class Cocktail {
     @OneToMany(mappedBy = "cocktail")
     private Set<CocktailTaste> cocktailTastes;
 
+    @OneToMany(mappedBy = "cocktail")
+    private Set<UserCocktail> userCocktails;
     // getters and setters
 }

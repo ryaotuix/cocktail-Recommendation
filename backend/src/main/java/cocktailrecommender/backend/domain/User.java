@@ -26,4 +26,7 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private Set<UserTaste> userTastes;
+
+    @OneToMany(mappedBy = "user")
+    private Set<UserCocktail> userCocktails;
 }

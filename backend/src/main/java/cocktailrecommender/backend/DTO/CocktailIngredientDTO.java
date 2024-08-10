@@ -22,7 +22,7 @@ public class CocktailIngredientDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class CreateCIDTO{
-        private CocktailDTO.CocktailDTOWithoutId cocktailDTOWithoutId;
+        private CocktailDTO.CocktailDTOWithId cocktailDTOWithId;
         private List<IngredientAmountDTO> ingredientAmountDTOList;
     }
 }
