@@ -19,7 +19,7 @@ public class Cocktail {
     private String howToMake;       //
 
     @OneToMany(mappedBy = "cocktail")
-    private Set<CocktailIngredient> cocktailIngredients;
+    private Set<UserCocktailIngredient> userCocktailIngredients;
 
     @OneToMany(mappedBy = "cocktail")
     private Set<CocktailTaste> cocktailTastes;

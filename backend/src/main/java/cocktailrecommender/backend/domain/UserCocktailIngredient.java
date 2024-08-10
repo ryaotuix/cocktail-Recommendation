@@ -6,11 +6,15 @@ import lombok.Setter;
 @Entity
 @Setter
 @NoArgsConstructor
-public class CocktailIngredient {
+public class UserCocktailIngredient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "cocktailId")
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "cocktailId")
@@ -21,6 +25,5 @@ public class CocktailIngredient {
     private Ingredient ingredient;
 
     private Double amount;
-
     // getters and setters
 }

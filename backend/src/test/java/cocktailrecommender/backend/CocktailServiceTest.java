@@ -1,17 +1,9 @@
 package cocktailrecommender.backend;
 
 import cocktailrecommender.backend.DTO.CocktailDTO;
-import cocktailrecommender.backend.DTO.CocktailIngredientDTO;
-import cocktailrecommender.backend.domain.Ingredient;
 import cocktailrecommender.backend.repository.CocktailRepository;
-import cocktailrecommender.backend.repository.IngredientRepository;
-import cocktailrecommender.backend.repository.UserRepository;
 import cocktailrecommender.backend.service.CocktailService;
-import cocktailrecommender.backend.service.IngredientService;
-import cocktailrecommender.backend.service.UserService;
-import org.aspectj.lang.annotation.After;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
