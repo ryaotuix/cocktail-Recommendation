@@ -16,6 +16,7 @@ public class CocktailDTO {
     public static class CocktailDTOWithoutId{
         private String name;
         private String howToMake;
+
     }
     @Getter
     @Setter

@@ -1,4 +1,5 @@
 package cocktailrecommender.backend.domain;
+import cocktailrecommender.backend.DTO.CocktailDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,5 +27,9 @@ public class Cocktail {
 
     @OneToMany(mappedBy = "cocktail")
     private Set<UserCocktail> userCocktails;
-    // getters and setters
+
+
+    public CocktailDTO.CocktailDTOWithoutId toWithoutId() {
+        return new CocktailDTO.CocktailDTOWithoutId(this.name, this.howToMake);
+    }
 }
