@@ -65,4 +65,8 @@ public class UserService {
         Optional<User> userOptional = userRepository.findByEmail(email);
         return userOptional.map(UserDTO.UserResponseDTO::new).orElse(null);
     }
+    public UserDTO.UserResponseDTO findById(Long id){
+        Optional<User> userOptional = userRepository.findById(id);
+        return userOptional.map(UserDTO.UserResponseDTO::new).orElse(null);
+    }
 }
