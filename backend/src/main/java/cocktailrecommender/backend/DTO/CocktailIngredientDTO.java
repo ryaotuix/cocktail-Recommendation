@@ -13,8 +13,9 @@ public class CocktailIngredientDTO {
     @Setter
     @AllArgsConstructor
     public static class IngredientAmountDTO{
-        private String ingredientName;
+        private IngredientDTO ingredient;
         private Double amount;
+        private String unit;
     }
 
     @Getter

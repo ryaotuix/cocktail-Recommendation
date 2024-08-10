@@ -12,6 +12,7 @@ public class UserDTO {
 
     @Getter
     @Setter
+    @NoArgsConstructor
     @AllArgsConstructor
     public static class UserRequestDTO {
         private String email;

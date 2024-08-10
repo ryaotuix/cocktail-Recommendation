@@ -1,141 +1,209 @@
 package cocktailrecommender.backend;
 
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
-
 import cocktailrecommender.backend.DTO.UserDTO;
 import cocktailrecommender.backend.domain.User;
 import cocktailrecommender.backend.repository.UserRepository;
 import cocktailrecommender.backend.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
-//@ExtendWith(MockitoExtension.class)
-@SpringBootTest
-public class UserServiceTest {
-    @Autowired
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+class UserServiceTest {
+
+    @Mock
     private UserRepository userRepository;
-    @Autowired
+
+    @InjectMocks
     private UserService userService;
 
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void signUp() {
-        // Arrange
-        User user1 = new User();
-        User user2 = new User();
+    void testCreateUser_Success() {
+        UserDTO.UserRequestDTO userRequestDTO = new UserDTO.UserRequestDTO();
+        userRequestDTO.setEmail("test@example.com");
+        userRequestDTO.setPassword("password123");
+        userRequestDTO.setName("John Doe");
 
-        user1.setName("name1");
-        user2.setName("name2");
+        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.empty());
+        when(userRepository.save(any(User.class))).thenReturn(new User());
 
-        user1.setEmail("email1");
-        user2.setEmail("email1");
+        boolean result = userService.createUser(userRequestDTO);
 
-        user1.setPassword("pw1");
-        user2.setPassword("pw2");
-
-        assertTrue(userService.createUser(UserDTO.UserRequestDTO.from(user1)));
-        assertFalse(userService.createUser(UserDTO.UserRequestDTO.from(user2)));
+        assertTrue(result);
+        verify(userRepository, times(1)).save(any(User.class));
     }
+
     @Test
-    void delete(){
-        List<User> users = new ArrayList<>();
-        User user1 = new User();
-        User user2 = new User();
-        User user3 = new User();
+    void testCreateUser_EmailAlreadyExists() {
+        UserDTO.UserRequestDTO userRequestDTO = new UserDTO.UserRequestDTO();
+        userRequestDTO.setEmail("test@example.com");
+        userRequestDTO.setPassword("password123");
+        userRequestDTO.setName("John Doe");
 
-        user1.setName("name1");
-        user2.setName("name2");
-        user3.setName("name3");
+        User existingUser = new User();
+        existingUser.setEmail("test@example.com");
 
-        user1.setEmail("email1");
-        user2.setEmail("email2");
-        user3.setEmail("email3");
+        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(existingUser));
 
-        user1.setPassword("pw1");
-        user2.setPassword("pw2");
-        user3.setPassword("pw3");
+        boolean result = userService.createUser(userRequestDTO);
 
-        users.add(user1); users.add(user2);
-
-        userService.createUser(UserDTO.UserRequestDTO.from(user1));
-        userService.createUser(UserDTO.UserRequestDTO.from(user2));
-        userService.createUser(UserDTO.UserRequestDTO.from(user3));
-
-        assertTrue(userService.deleteUser(3L));
-        List<User> remainUsers = userRepository.findAll();
-        assertEquals(2,remainUsers.size());
-        assertEquals(user1.getEmail(),remainUsers.get(0).getEmail());
-        assertEquals(user2.getEmail(),remainUsers.get(1).getEmail());
+        assertFalse(result);
+        verify(userRepository, times(0)).save(any(User.class));
     }
-    @Test
-    void login(){
-        User user1 = new User();
-        user1.setEmail("user1@user.com");
-        user1.setName("user1");
-        user1.setPassword("pw1");
-        user1.setUserId(1L);
-        userRepository.save(user1);
 
-        UserDTO.UserRequestDTO userRequestDTO = new UserDTO.UserRequestDTO("user1@user.com","user1","pw1");
-        assertTrue(userService.login(userRequestDTO));
+    @Test
+    void testDeleteUser_Success() {
+        User user = new User();
+        user.setUserId(1L);
+        user.setEmail("test@example.com");
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        boolean result = userService.deleteUser(1L);
+
+        assertTrue(result);
+        verify(userRepository, times(1)).deleteById(1L);
     }
+
     @Test
-    void changePW(){
-        User user1 = new User();
-        user1.setEmail("user1@user.com");
-        user1.setName("user1");
-        user1.setPassword("pw1");
-        user1.setUserId(1L);
-        userRepository.save(user1);
-        userService.changePassword(1L, "newPW");
-        assertEquals("newPW",userService.findByEmail("user1@user.com").getPassword());
+    void testDeleteUser_UserNotFound() {
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        boolean result = userService.deleteUser(1L);
+
+        assertFalse(result);
+        verify(userRepository, times(0)).deleteById(1L);
     }
+
     @Test
-    void changeName(){
-        User user1 = new User();
-        user1.setEmail("user1@user.com");
-        user1.setName("user1");
-        user1.setPassword("pw1");
-        user1.setUserId(1L);
-        userRepository.save(user1);
-        userService.changeName(1L, "newName");
-        assertEquals("newName",userService.findByEmail("user1@user.com").getName());
+    void testLogin_Success() {
+        UserDTO.UserRequestDTO userRequestDTO = new UserDTO.UserRequestDTO();
+        userRequestDTO.setEmail("test@example.com");
+        userRequestDTO.setPassword("password123");
+
+        User user = new User();
+        user.setEmail("test@example.com");
+        user.setPassword("password123");
+
+        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(user));
+
+        boolean result = userService.login(userRequestDTO);
+
+        assertTrue(result);
     }
+
     @Test
-    void findByEmail(){
-        User user1 = new User();
-        User user2 = new User();
-        user1.setEmail("user1@user.com");
-        user1.setName("user1");
-        user1.setPassword("pw1");
+    void testLogin_WrongPassword() {
+        UserDTO.UserRequestDTO userRequestDTO = new UserDTO.UserRequestDTO();
+        userRequestDTO.setEmail("test@example.com");
+        userRequestDTO.setPassword("wrongpassword");
 
-        user2.setEmail("user2@user.com");
-        user2.setName("user2");
-        user2.setPassword("pw2");
+        User user = new User();
+        user.setEmail("test@example.com");
+        user.setPassword("password123");
 
-        userRepository.save(user1);
-        userRepository.save(user2);
+        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(user));
 
-        assertEquals(user2.getEmail(),userService.findByEmail("user2@user.com").getEmail());
+        boolean result = userService.login(userRequestDTO);
 
+        assertFalse(result);
+    }
+
+    @Test
+    void testLogin_UserNotFound() {
+        UserDTO.UserRequestDTO userRequestDTO = new UserDTO.UserRequestDTO();
+        userRequestDTO.setEmail("test@example.com");
+        userRequestDTO.setPassword("password123");
+
+        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.empty());
+
+        boolean result = userService.login(userRequestDTO);
+
+        assertFalse(result);
+    }
+
+    @Test
+    void testChangePassword_Success() {
+        User user = new User();
+        user.setUserId(1L);
+        user.setPassword("oldpassword");
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        boolean result = userService.changePassword(1L, "newpassword");
+
+        assertTrue(result);
+        assertEquals("newpassword", user.getPassword());
+        verify(userRepository, times(1)).save(user);
+    }
+
+    @Test
+    void testChangePassword_UserNotFound() {
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        boolean result = userService.changePassword(1L, "newpassword");
+
+        assertFalse(result);
+        verify(userRepository, times(0)).save(any(User.class));
+    }
+
+    @Test
+    void testChangeName_Success() {
+        User user = new User();
+        user.setUserId(1L);
+        user.setName("Old Name");
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        boolean result = userService.changeName(1L, "New Name");
+
+        assertTrue(result);
+        assertEquals("New Name", user.getName());
+        verify(userRepository, times(1)).save(user);
+    }
+
+    @Test
+    void testChangeName_UserNotFound() {
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        boolean result = userService.changeName(1L, "New Name");
+
+        assertFalse(result);
+        verify(userRepository, times(0)).save(any(User.class));
+    }
+
+    @Test
+    void testFindByEmail_UserExists() {
+        User user = new User();
+        user.setEmail("test@example.com");
+        user.setName("John Doe");
+
+        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(user));
+
+        UserDTO.UserResponseDTO result = userService.findByEmail("test@example.com");
+
+        assertNotNull(result);
+        assertEquals("test@example.com", result.getEmail());
+        assertEquals("John Doe", result.getName());
+    }
+
+    @Test
+    void testFindByEmail_UserNotFound() {
+        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.empty());
+
+        UserDTO.UserResponseDTO result = userService.findByEmail("test@example.com");
+
+        assertNull(result);
     }
 }

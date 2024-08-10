@@ -18,6 +18,8 @@ public class Ingredient {
     private Long ingredientId;
     private String name;
 
+    @Getter
+    @Setter
     @OneToMany(mappedBy = "ingredient")
     private Set<CocktailIngredient> cocktailIngredients;
 

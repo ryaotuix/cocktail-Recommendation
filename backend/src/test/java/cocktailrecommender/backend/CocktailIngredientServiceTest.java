@@ -1,75 +1,107 @@
-//package cocktailrecommender.backend;
-//
-//import cocktailrecommender.backend.DTO.CocktailDTO;
-//import cocktailrecommender.backend.DTO.CocktailIngredientDTO;
-//import cocktailrecommender.backend.domain.CocktailIngredient;
-//import cocktailrecommender.backend.repository.CocktailIngredientRepository;
-//import cocktailrecommender.backend.repository.CocktailRepository;
-//import cocktailrecommender.backend.repository.IngredientRepository;
-//import cocktailrecommender.backend.service.CocktailIngredientService;
-//import cocktailrecommender.backend.service.CocktailService;
-//import cocktailrecommender.backend.service.IngredientService;
-//import org.junit.jupiter.api.AfterEach;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import static org.junit.jupiter.api.Assertions.*;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//@SpringBootTest
-//public class CocktailIngredientServiceTest {
-//    @Autowired
-//    private CocktailIngredientRepository cocktailIngredientRepository;
-//    @Autowired
-//    private CocktailIngredientService cocktailIngredientService;
-//    @Autowired
-//    private IngredientRepository ingredientRepository;
-//    @Autowired
-//    private IngredientService ingredientService;
-//    @Autowired
-//    private CocktailRepository cocktailRepository;
-//    @Autowired
-//    private CocktailService cocktailService;
-//    @BeforeEach
-//    void setUp() {
-//        ingredientService.createIngredient("ingredient1");
-//        ingredientService.createIngredient("ingredient2");
-//        cocktailService.createCocktail(new CocktailDTO.CocktailDTOWithoutId("cocktail1","howToMake"));
-//    }
-//    @AfterEach
-//    void clear(){
-//        cocktailRepository.deleteAll();
-//        ingredientRepository.deleteAll();
-//        cocktailIngredientRepository.deleteAll();
-//    }
-//    @Test
-//    void createCI(){
-//        CocktailIngredientDTO.IngredientAmountDTO ia1 = new CocktailIngredientDTO.IngredientAmountDTO("ingredient1",1d);
-//        CocktailIngredientDTO.IngredientAmountDTO ia2 = new CocktailIngredientDTO.IngredientAmountDTO("ingredient2",2d);
-//        List<CocktailIngredientDTO.IngredientAmountDTO> ingredientAmountDTOList = new ArrayList<>();
-//        ingredientAmountDTOList.add(ia1); ingredientAmountDTOList.add(ia2);
-//
-//        CocktailIngredientDTO.CreateCIDTO createCIDTO = new CocktailIngredientDTO.CreateCIDTO();
-//        createCIDTO.setCocktailDTOWithoutId(new CocktailDTO.CocktailDTOWithoutId("cocktail1","howToMake"));
-//        createCIDTO.setIngredientAmountDTOList(ingredientAmountDTOList);
-//
-//        //cocktail name exists, return False
-//        assertFalse(cocktailIngredientService.createCocktailWithIngredient(createCIDTO));
-//
-//        //new cocktail name, return True
-//        createCIDTO.setCocktailDTOWithoutId(new CocktailDTO.CocktailDTOWithoutId("cocktail2","howToMake"));
-//        assertTrue(cocktailIngredientService.createCocktailWithIngredient(createCIDTO));
-//
-//        //not existing ingredient, return False
-//        ingredientAmountDTOList.add(new CocktailIngredientDTO.IngredientAmountDTO("ingredient3",1d));
-//        createCIDTO.setIngredientAmountDTOList(ingredientAmountDTOList);
-//        assertFalse(cocktailIngredientService.createCocktailWithIngredient(createCIDTO));
-//
-//
-//    }
-//
-//
-//}
+package cocktailrecommender.backend.service;
+
+import cocktailrecommender.backend.DTO.CocktailDTO;
+import cocktailrecommender.backend.DTO.CocktailIngredientDTO;
+import cocktailrecommender.backend.DTO.IngredientDTO;
+import cocktailrecommender.backend.domain.Cocktail;
+import cocktailrecommender.backend.domain.CocktailIngredient;
+import cocktailrecommender.backend.domain.Ingredient;
+import cocktailrecommender.backend.repository.CocktailIngredientRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+class CocktailIngredientServiceTest {
+
+    @Mock
+    private CocktailIngredientRepository cocktailIngredientRepository;
+
+    @Mock
+    private CocktailService cocktailService;
+
+    @Mock
+    private IngredientService ingredientService;
+
+    @InjectMocks
+    private CocktailIngredientService cocktailIngredientService;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void testCreateCocktailWithIngredient_Success() {
+        // Arrange
+        IngredientDTO ingredientDTO = new IngredientDTO(1L, "Lime Juice");
+        CocktailIngredientDTO.IngredientAmountDTO ingredientAmountDTO = new CocktailIngredientDTO.IngredientAmountDTO("Lime Juice", 2);
+        CocktailIngredientDTO.CreateCIDTO createCIDTO = new CocktailIngredientDTO.CreateCIDTO(
+                new CocktailDTO.CocktailDTOWithId(1L, "Mojito", "Mix ingredients"),
+                Arrays.asList(ingredientAmountDTO)
+        );
+
+        Ingredient ingredient = new Ingredient();
+        ingredient.setIngredientId(1L);
+        ingredient.setName("Lime Juice");
+
+        when(ingredientService.findIngredientByName("Lime Juice")).thenReturn(Optional.of(ingredient));
+
+        // Act
+        boolean result = cocktailIngredientService.createCocktailWithIngredient(createCIDTO);
+
+        // Assert
+        assertTrue(result);
+        verify(ingredientService, times(1)).findIngredientByName("Lime Juice");
+    }
+
+    @Test
+    void testCreateCocktailWithIngredient_Failure_NoIngredient() {
+        // Arrange
+        CocktailIngredientDTO.IngredientAmountDTO ingredientAmountDTO = new CocktailIngredientDTO.IngredientAmountDTO("Nonexistent Ingredient", "1 oz");
+        CocktailIngredientDTO.CreateCIDTO createCIDTO = new CocktailIngredientDTO.CreateCIDTO(
+                new CocktailDTO.CocktailDTOWithId(1L, "Mojito", "Mix ingredients"),
+                Arrays.asList(ingredientAmountDTO)
+        );
+
+        when(ingredientService.findIngredientByName("Nonexistent Ingredient")).thenReturn(Optional.empty());
+
+        // Act
+        boolean result = cocktailIngredientService.createCocktailWithIngredient(createCIDTO);
+
+        // Assert
+        assertFalse(result);
+        verify(ingredientService, times(1)).findIngredientByName("Nonexistent Ingredient");
+    }
+
+    @Test
+    void testFindCocktailsByIngredients() {
+        // Arrange
+        IngredientDTO ingredientDTO1 = new IngredientDTO(1L, "Lime Juice");
+        IngredientDTO ingredientDTO2 = new IngredientDTO(2L, "Mint Leaves");
+        List<IngredientDTO> ingredientDTOList = Arrays.asList(ingredientDTO1, ingredientDTO2);
+
+        Cocktail cocktail1 = new Cocktail();
+        cocktail1.setCocktailId(1L);
+        cocktail1.setName("Mojito");
+        cocktail1.setHowToMake("Mix ingredients");
+
+        when(cocktailIngredientRepository.findCocktailsByIngredients(anyList())).thenReturn(Arrays.asList(cocktail1));
+
+        // Act
+        List<CocktailDTO.CocktailDTOWithId> result = cocktailIngredientService.findCocktailsByIngredients(ingredientDTOList);
+
+        // Assert
+        assertEquals(1, result.size());
+        assertEquals("Mojito", result.get(0).getName());
+        verify(cocktailIngredientRepository, times(1)).findCocktailsByIngredients(anyList());
+    }
+}
