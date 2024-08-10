@@ -19,18 +19,13 @@ public class CocktailService {
         this.cocktailRepository = cocktailRepository;
     }
 
-    public boolean createCocktail(CocktailDTO.CocktailDTOWithoutId cocktailDTOWithoutId){
-        //if same name exists: cannot create
-        if(cocktailRepository.findByName(cocktailDTOWithoutId.getName()).isPresent()){
-            return false;
-        }else{
-            Cocktail cocktail = new Cocktail();
-            cocktail.setName(cocktailDTOWithoutId.getName());
-            cocktail.setHowToMake(cocktailDTOWithoutId.getHowToMake());
-            cocktailRepository.save(cocktail);
-            return true;
-        }
+    public Long createCocktail(CocktailDTO.CocktailDTOWithoutId cocktailDTOWithoutId){
+        Cocktail cocktail = new Cocktail();
+        cocktail.setName(cocktailDTOWithoutId.getName());
+        cocktail.setHowToMake(cocktailDTOWithoutId.getHowToMake());
+        return cocktailRepository.save(cocktail).getCocktailId();
     }
+
     public Optional<CocktailDTO.CocktailDTOWithId> findCocktailByName(String name){
         return cocktailRepository.findByName(name).map(
                 cocktail -> CocktailDTO.CocktailDTOWithId.from(cocktail)
