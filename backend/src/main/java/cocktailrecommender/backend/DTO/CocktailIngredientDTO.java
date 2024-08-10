@@ -25,4 +25,14 @@ public class CocktailIngredientDTO {
         private CocktailDTO.CocktailDTOWithoutId cocktailDTOWithoutId;
         private List<IngredientAmountDTO> ingredientAmountDTOList;
     }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateCIDTO {
+        private Long cocktailId; // 수정할 칵테일의 ID
+        private String ingredientName; // 수정할 재료의 이름
+        private Double newAmount; // 새로 설정할 양
+    }
 }

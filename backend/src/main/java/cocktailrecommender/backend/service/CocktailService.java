@@ -21,7 +21,7 @@ public class CocktailService {
 
     public boolean createCocktail(CocktailDTO.CocktailDTOWithoutId cocktailDTOWithoutId){
         //if same name exists: cannot create
-        if(cocktailRepository.findByName(cocktailDTOWithoutId.getName()).isPresent()){
+        if(cocktailRepository.findByNameIgnoreCase(cocktailDTOWithoutId.getName()).isPresent()){
             return false;
         }else{
             Cocktail cocktail = new Cocktail();
@@ -32,7 +32,7 @@ public class CocktailService {
         }
     }
     public Optional<CocktailDTO.CocktailDTOWithId> findCocktailByName(String name){
-        return cocktailRepository.findByName(name).map(
+        return cocktailRepository.findByNameIgnoreCase(name).map(
                 cocktail -> CocktailDTO.CocktailDTOWithId.from(cocktail)
         );
     }
