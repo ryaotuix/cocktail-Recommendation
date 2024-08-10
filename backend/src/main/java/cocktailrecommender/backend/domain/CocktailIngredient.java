@@ -1,5 +1,6 @@
 package cocktailrecommender.backend.domain;
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -7,6 +8,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class CocktailIngredient {
+    @Getter
+    @Setter
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +24,9 @@ public class CocktailIngredient {
     private Ingredient ingredient;
 
     private Double amount;
+    private String unit;
+
 
     // getters and setters
+
 }
