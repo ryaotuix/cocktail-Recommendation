@@ -29,8 +29,6 @@ public class CocktailController {
     @Autowired
     private CocktailTasteService CT_Service;
 
-    @Autowired
-    private UserCocktailService CU_Service;
 
     @Autowired
     private UserService U_Service;
@@ -64,13 +62,13 @@ public class CocktailController {
 
         // 2. add to CU repo
         // if this cocktail exist in this user, can't make
-        if (CU_Service.cocktailExistForUser(userResponseDTO, cwithID))
+        if (UCI_Service.cocktailExistForUser(userResponseDTO, cwithID))
         {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("You already have this cocktail");
         }
 
         // if this cocktail doesn't exist in this user,
-        CU_Service.createUserCocktail(userResponseDTO, cwithID);
+        UCI_Service.createUserCocktail(userResponseDTO, cwithID);
 
         UCI_DTO.Create_UCI_DTO createUCI_DTO = new UCI_DTO.Create_UCI_DTO(userResponseDTO, cwithID, createDTO.getIngredientAmountDTOList());
 
@@ -120,6 +118,11 @@ public class CocktailController {
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update cocktail");
     }
+
+    // 칵테일 조제과정 수정
+
+    //
+
 
 
 }

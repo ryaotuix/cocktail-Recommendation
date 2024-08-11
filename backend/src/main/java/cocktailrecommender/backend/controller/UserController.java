@@ -80,4 +80,8 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
     }
+
+    // change taste preference
+    // change ingredient list
+
 }
