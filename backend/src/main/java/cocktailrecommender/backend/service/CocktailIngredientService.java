@@ -24,11 +24,12 @@ public class CocktailIngredientService {
         this.cocktailService = cocktailService;
         this.ingredientService = ingredientService;
     }
+
     //return false if cocktail exists or ingredient not exists.
     public boolean createCocktailWithIngredient(CocktailIngredientDTO.CreateCIDTO createCIDTO) {
 
         return createCIDTO.getIngredientAmountDTOList().stream()
-                .allMatch(ia -> ingredientService.findIngredientByName(ia.getIngredientName())
+                .allMatch(ia -> ingredientService.findIngredientByName(ia.getIngredient().getName())
                         .map(ingredient -> {
                             CocktailIngredient cocktailIngredient = new CocktailIngredient();
                             cocktailIngredient.setCocktail(createCIDTO.getCocktailDTOWithId().to());
