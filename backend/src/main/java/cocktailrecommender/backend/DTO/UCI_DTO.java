@@ -4,11 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-public class CocktailIngredientDTO {
+public class UCI_DTO {
     @Getter
     @Setter
     @AllArgsConstructor
@@ -22,8 +21,19 @@ public class CocktailIngredientDTO {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class CreateCIDTO{
+    public static class Create_UCI_DTO {
+        private UserDTO.UserResponseDTO userResponseDTO;
         private CocktailDTO.CocktailDTOWithId cocktailDTOWithId;
         private List<IngredientAmountDTO> ingredientAmountDTOList;
     }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Delete_UCI_DTO {
+        private UserDTO.UserResponseDTO userResponseDTO;
+        private CocktailDTO.CocktailDTOWithId cocktailDTOWithId;
+    }
+
 }

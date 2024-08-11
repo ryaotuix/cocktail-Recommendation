@@ -21,7 +21,7 @@ public class Ingredient {
     @Getter
     @Setter
     @OneToMany(mappedBy = "ingredient")
-    private Set<CocktailIngredient> cocktailIngredients;
+    private Set<UCI> UCIs;
 
     @OneToMany(mappedBy = "ingredient")
     private Set<UserIngredient> userIngredients;

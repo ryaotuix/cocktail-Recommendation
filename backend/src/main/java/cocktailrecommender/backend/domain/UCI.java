@@ -1,4 +1,5 @@
 package cocktailrecommender.backend.domain;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,7 +8,7 @@ import lombok.Setter;
 @Entity
 @Setter
 @NoArgsConstructor
-public class CocktailIngredient {
+public class UCI {
     @Getter
     @Setter
 
@@ -23,10 +24,12 @@ public class CocktailIngredient {
     @JoinColumn(name = "ingredientId")
     private Ingredient ingredient;
 
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private User user;
+
     private Double amount;
     private String unit;
 
-
-    // getters and setters
 
 }
