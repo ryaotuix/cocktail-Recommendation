@@ -5,12 +5,16 @@ import cocktailrecommender.backend.domain.User;
 import cocktailrecommender.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import cocktailrecommender.backend.utils.JwtCertificate;
 
 import java.util.Optional;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
+
+    @Autowired
+    private JwtCertificate jwtCertificate;
 
     @Autowired
     public UserService(UserRepository userRepository) {
@@ -64,5 +68,17 @@ public class UserService {
     public UserDTO.UserResponseDTO findByEmail(String email) {
         Optional<User> userOptional = userRepository.findByEmail(email);
         return userOptional.map(UserDTO.UserResponseDTO::new).orElse(null);
+    }
+
+    public UserDTO.UserResponseDTO findByID(Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        return userOptional.map(UserDTO.UserResponseDTO::new).orElse(null);
+    }
+
+    // email이 없으면 null 아니면 userDTO반환
+    public UserDTO.UserResponseDTO getUserFromToken(String token) {
+        String userEmail = jwtCertificate.extractEmail(token);
+        Optional<User> user = userRepository.findByEmail(userEmail);
+        return user.map(UserDTO.UserResponseDTO::new).orElse(null);
     }
 }

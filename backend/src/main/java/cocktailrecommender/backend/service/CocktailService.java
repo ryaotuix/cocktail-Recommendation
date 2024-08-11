@@ -59,4 +59,16 @@ public class CocktailService {
             return false;
         }
     }
+
+    // cocktail ID 로 C-DTO w ID return
+    // cocktailID 없으면 null 반환
+    public CocktailDTO.CocktailDTOWithId findByID(Long cocktailId)
+    {
+        Optional<Cocktail> cocktail = cocktailRepository.findById(cocktailId);
+        if (cocktail.isPresent()) {
+            return CocktailDTO.CocktailDTOWithId.from(cocktail.get());
+        }
+        else return null;
+    }
+
 }
