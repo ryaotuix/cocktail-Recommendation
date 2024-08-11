@@ -21,4 +21,12 @@ public class UserCocktailService {
         userCocktail.setCocktail(cocktailDTOWithId.to());
         userCocktailRepository.save(userCocktail);
     }
+
+    public boolean cocktailExistForUser(UserDTO.UserResponseDTO userResponseDTO, CocktailDTO.CocktailDTOWithId cocktailDTOWithId)
+    {
+        Long userId = userResponseDTO.getUserId();
+        Long cocktailId = cocktailDTOWithId.getCocktailId();
+        return userCocktailRepository.existsByUserIdAndCocktailId(userId, cocktailId);
+    }
+
 }

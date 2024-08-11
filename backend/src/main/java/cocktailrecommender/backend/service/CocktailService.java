@@ -20,6 +20,11 @@ public class CocktailService {
     }
 
     public Long createCocktail(CocktailDTO.CocktailDTOWithoutId cocktailDTOWithoutId){
+        // 이 칵테일과 같은 이름의 칵테일이 db에 존재할경우, 그 칵테일의 ID 리턴
+        if (cocktailRepository.findByName(cocktailDTOWithoutId.getName()).isPresent()){
+            return cocktailRepository.findByName(cocktailDTOWithoutId.getName()).get().getCocktailId();
+        }
+
         Cocktail cocktail = new Cocktail();
         cocktail.setName(cocktailDTOWithoutId.getName());
         cocktail.setHowToMake(cocktailDTOWithoutId.getHowToMake());

@@ -5,6 +5,7 @@ import cocktailrecommender.backend.DTO.CocktailIngredientDTO;
 import cocktailrecommender.backend.DTO.UserDTO;
 import cocktailrecommender.backend.domain.User;
 import cocktailrecommender.backend.repository.CocktailRepository;
+import cocktailrecommender.backend.repository.UserCocktailRepository;
 import cocktailrecommender.backend.service.*;
 import cocktailrecommender.backend.utils.JwtCertificate;
 import lombok.Getter;
@@ -36,13 +37,11 @@ public class CocktailController {
     @Autowired
     private UserService U_Service;
 
-    @Autowired
-    private final CocktailRepository cocktailRepository;
 
     public CocktailController(JwtCertificate jwtCertificate, CocktailRepository cocktailRepository) {
         this.jwtCertificate = jwtCertificate;
-        this.cocktailRepository = cocktailRepository;
     }
+
 
     @Getter
     public static class CreateDTO
@@ -58,16 +57,25 @@ public class CocktailController {
         // 토큰 제대로 만들어주기
         token = token.replace("Bearer ", "");
 
+
         // 1. add to C repo
         Long cocktailID = C_Service.createCocktail(createDTO.getCocktailDTO());
-
+        // cDTO, uDTO
         CocktailDTO.CocktailDTOWithId cwithID = C_Service.findByID(cocktailID);
         UserDTO.UserResponseDTO userResponseDTO = U_Service.getUserFromToken(token);
 
         // 2. add to CU repo
+        // if this cocktail exist in this user, can't make
+        if (CU_Service.cocktailExistForUser(userResponseDTO, cwithID))
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("You already have this cocktail");
+        }
+
+        // if this cocktail doesn't exist in this user,
         CU_Service.createUserCocktail(userResponseDTO, cwithID);
 
         CocktailIngredientDTO.CreateCIDTO createCIDTO = new CocktailIngredientDTO.CreateCIDTO(cwithID, createDTO.getIngredientAmountDTOList());
+
         // 3. add to CI repo
         if (CI_Service.createCocktailWithIngredient(createCIDTO))
         {
