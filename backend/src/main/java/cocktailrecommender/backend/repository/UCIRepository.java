@@ -20,4 +20,12 @@ public interface UCIRepository extends JpaRepository<UCI, Long> {
     @Transactional
     @Query("DELETE FROM UCI u WHERE u.user.userId = :userId AND u.cocktail.cocktailId = :cocktailId")
     void deleteByUserIdAndCocktailId(@Param("userId") Long userId, @Param("cocktailId") Long cocktailId);
+
+    @Query("SELECT c FROM Cocktail c WHERE NOT EXISTS (" +
+            "SELECT 1 FROM UCI ci " +
+            "WHERE ci.cocktail = c " +
+            "AND ci.ingredient.ingredientId NOT IN (" +
+            "SELECT ui.ingredient.ingredientId FROM UserIngredient ui WHERE ui.user.userId = :userId))")
+    List<Cocktail> findCocktailsByUserIngredients(@Param("userId") Long userId);
+
 }

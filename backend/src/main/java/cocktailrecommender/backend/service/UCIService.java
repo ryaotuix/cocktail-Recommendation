@@ -4,6 +4,7 @@ import cocktailrecommender.backend.DTO.CocktailDTO;
 import cocktailrecommender.backend.DTO.UCI_DTO;
 import cocktailrecommender.backend.DTO.IngredientDTO;
 import cocktailrecommender.backend.DTO.UserDTO;
+import cocktailrecommender.backend.domain.Cocktail;
 import cocktailrecommender.backend.domain.UCI;
 import cocktailrecommender.backend.domain.UserCocktail;
 import cocktailrecommender.backend.repository.UCIRepository;
@@ -126,4 +127,44 @@ public class UCIService {
         return true;
     }
 
+    // 유저가 가진 재료로 cocktail DTO List 반환
+    public List<CocktailDTO.CocktailDTOWithId> findCocktailByUserIngredients(UCI_DTO.UCI_Ingredients_DTO ingredientsDTO)
+    {
+        // DTO
+        UserDTO.UserResponseDTO userResponseDTO = ingredientsDTO.getUserResponseDTO();
+        List<IngredientDTO> ingredients = ingredientsDTO.getIngredientDTO();
+
+        // get cocktail List
+        List<Cocktail> cocktailList = UCIRepository.findCocktailsByUserIngredients(userResponseDTO.getUserId());
+        // get cocktail DTO list from List
+        List<CocktailDTO.CocktailDTOWithId> cocktailDTOList = new java.util.ArrayList<>(List.of());
+        for (Cocktail cocktail : cocktailList)
+        {
+            cocktailDTOList.add(CocktailDTO.CocktailDTOWithId.from(cocktail));
+        }
+
+        return cocktailDTOList;
+    }
+
+    // 유저가 선택한 재료로 cocktail DTO List 반환
+    public List<CocktailDTO.CocktailDTOWithId> findCocktailBySelectedIngredients(UCI_DTO.UCI_Ingredients_DTO ingredientsDTO)
+    {
+        // DTO
+        UserDTO.UserResponseDTO userResponseDTO = ingredientsDTO.getUserResponseDTO();
+        List<IngredientDTO> ingredients = ingredientsDTO.getIngredientDTO();
+        List<Long> ingredientsIds = new java.util.ArrayList<>(List.of());
+        for (IngredientDTO ingredientDTO : ingredients)
+        {
+            ingredientsIds.add(ingredientDTO.getId());
+        }
+
+        List<Cocktail> cocktailList = UCIRepository.findCocktailsByIngredients(ingredientsIds);
+        List<CocktailDTO.CocktailDTOWithId> cocktailDTOList = new java.util.ArrayList<>(List.of());
+        for (Cocktail cocktail : cocktailList)
+        {
+            cocktailDTOList.add(CocktailDTO.CocktailDTOWithId.from(cocktail));
+        }
+
+        return cocktailDTOList;
+    }
 }

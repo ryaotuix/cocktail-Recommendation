@@ -36,4 +36,13 @@ public class UCI_DTO {
         private CocktailDTO.CocktailDTOWithId cocktailDTOWithId;
     }
 
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UCI_Ingredients_DTO {
+        private UserDTO.UserResponseDTO userResponseDTO;
+        private List<IngredientDTO> IngredientDTO;
+    }
+
 }

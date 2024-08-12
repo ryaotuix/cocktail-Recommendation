@@ -119,10 +119,57 @@ public class CocktailController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update cocktail");
     }
 
+    @Getter
+    public static class UpdateDTO
+    {
+        CocktailDTO.CocktailDTOWithId cocktailDTO;
+        String howtoMake;
+    }
+
     // 칵테일 조제과정 수정
+    @PutMapping("/update/howToMake")
+    public ResponseEntity<String> updateHowToMake(@RequestHeader("Authorization") String token, @RequestBody UpdateDTO updateDTO) {
+        token = token.replace("Bearer ", "");
+        UserDTO.UserResponseDTO userResponseDTO = U_Service.getUserFromToken(token);
 
-    //
+        String howtoMake = updateDTO.getHowtoMake();
 
+        CocktailDTO.CocktailDTOWithId cocktailDTO = updateDTO.getCocktailDTO();
+        // see if this user have this cocktail
+        if (!UCI_Service.cocktailExistForUser(userResponseDTO, cocktailDTO))
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to find cocktail for you");
+        }
+
+        C_Service.editHowToMake(cocktailDTO.getCocktailId(), howtoMake);
+        return ResponseEntity.ok("How to Make is updated successfully");
+    }
+
+
+    // 칵테일 유저가 가진 재료로 검색
+    @PostMapping("/searchByYourIngredients")
+    public ResponseEntity<List<CocktailDTO.CocktailDTOWithId>> searchCocktailByUserIngredients(@RequestHeader("Authorization") String token, @RequestBody UCI_DTO.UCI_Ingredients_DTO ingredientsDto) {
+        token = token.replace("Bearer ", "");
+        UserDTO.UserResponseDTO userResponseDTO = U_Service.getUserFromToken(token);
+
+        // 사용자가 가진 재료로 칵테일 검색
+        List<CocktailDTO.CocktailDTOWithId> cocktails = UCI_Service.findCocktailByUserIngredients(ingredientsDto);
+
+        return ResponseEntity.ok(cocktails);
+    }
+
+
+    // 칵테일 유저가 선택한 재료로 검색
+    @PostMapping("/searchByIngredients")
+    public ResponseEntity<List<CocktailDTO.CocktailDTOWithId>> searchCocktailBySelectedIngredients(@RequestHeader("Authorization") String token, @RequestBody UCI_DTO.UCI_Ingredients_DTO ingredientsDto) {
+        token = token.replace("Bearer ", "");
+        UserDTO.UserResponseDTO userResponseDTO = U_Service.getUserFromToken(token);
+
+        // 사용자가 가진 재료로 칵테일 검색
+        List<CocktailDTO.CocktailDTOWithId> cocktails = UCI_Service.findCocktailBySelectedIngredients(ingredientsDto);
+
+        return ResponseEntity.ok(cocktails);
+    }
 
 
 }

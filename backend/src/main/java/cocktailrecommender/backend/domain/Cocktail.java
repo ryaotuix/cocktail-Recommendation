@@ -26,7 +26,7 @@ public class Cocktail {
     private Set<CocktailTaste> cocktailTastes;
 
     @OneToMany(mappedBy = "cocktail")
-    private Set<UserCocktail> userCocktails;
+    private Set<UCI> userCocktails;
 
 
     public CocktailDTO.CocktailDTOWithoutId toWithoutId() {
