@@ -6,12 +6,11 @@ import cocktailrecommender.backend.DTO.IngredientDTO;
 import cocktailrecommender.backend.DTO.UserDTO;
 import cocktailrecommender.backend.domain.Cocktail;
 import cocktailrecommender.backend.domain.UCI;
-import cocktailrecommender.backend.domain.UserCocktail;
 import cocktailrecommender.backend.repository.UCIRepository;
-import cocktailrecommender.backend.repository.UserCocktailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,31 +19,21 @@ public class UCIService {
     private final UCIRepository UCIRepository;
     private final CocktailService cocktailService;
     private final IngredientService ingredientService;
-    private final UserCocktailRepository userCocktailRepository;
 
     @Autowired
-    public UCIService(cocktailrecommender.backend.repository.UCIRepository uciRepository, CocktailService cocktailService, IngredientService ingredientService, UserCocktailRepository userCocktailRepository) {
+    public UCIService(cocktailrecommender.backend.repository.UCIRepository uciRepository, CocktailService cocktailService, IngredientService ingredientService) {
         UCIRepository = uciRepository;
         this.cocktailService = cocktailService;
         this.ingredientService = ingredientService;
-        this.userCocktailRepository = userCocktailRepository;
     }
 
-    // U-C relationship
-    public void createUserCocktail(UserDTO.UserResponseDTO userResponseDTO, CocktailDTO.CocktailDTOWithId cocktailDTOWithId){
-        UserCocktail userCocktail = new UserCocktail();
-        userCocktail.setUser(userResponseDTO.to());
-        userCocktail.setCocktail(cocktailDTOWithId.to());
-        userCocktailRepository.save(userCocktail);
-    }
-
+    // check if this cocktail exists for user
     public boolean cocktailExistForUser(UserDTO.UserResponseDTO userResponseDTO, CocktailDTO.CocktailDTOWithId cocktailDTOWithId)
     {
         Long userId = userResponseDTO.getUserId();
         Long cocktailId = cocktailDTOWithId.getCocktailId();
-        return userCocktailRepository.existsByUserIdAndCocktailId(userId, cocktailId);
+        return UCIRepository.existsByUserIdAndCocktailId(userId, cocktailId);
     }
-
 
     // U-C-I relationship
     // 칵테일 생성
@@ -55,14 +44,20 @@ public class UCIService {
         CocktailDTO.CocktailDTOWithId cocktailDTOWithId = createUCI_DTO.getCocktailDTOWithId();
         List<UCI_DTO.IngredientAmountDTO> ingredientAmountDTOList = createUCI_DTO.getIngredientAmountDTOList();
 
-        // Step 1:
-        Optional<CocktailDTO.CocktailDTOWithId> optionalCocktail = cocktailService.findCocktailByName(cocktailDTOWithId.getName());
-        if (!optionalCocktail.isPresent()) {
-            // Cocktail doesn't exist in C-Repo, return false
+//        // Step 1:
+//        Optional<CocktailDTO.CocktailDTOWithId> optionalCocktail = cocktailService.findCocktailByName(cocktailDTOWithId.getName());
+//        if (!optionalCocktail.isPresent()) {
+//            // Cocktail doesn't exist in C-Repo, return false
+//            return false;
+//        }
+
+        // Step 1 : if User have this cocktail -> return false
+        if (cocktailExistForUser(userResponseDTO,cocktailDTOWithId))
+        {
             return false;
         }
 
-        List<UCI> UCIList = List.of();
+        List<UCI> UCIList = new ArrayList<>();
 
         // Step 2:
         for (UCI_DTO.IngredientAmountDTO ingredientAmountDTO : ingredientAmountDTOList) {
@@ -70,10 +65,10 @@ public class UCIService {
 
             Optional<IngredientDTO> optionalIngredient = ingredientService.findIngredientByName(ingredientDTO.getName());
 
-            if (!optionalIngredient.isPresent()) {
-                // ingredient doesn't exist in I-Repo, return false
-                return false;
-            }
+//            if (!optionalIngredient.isPresent()) {
+//                // ingredient doesn't exist in I-Repo, return false
+//                return false;
+//            }
 
             // Step 3: Create a new CocktailIngredient entry
             UCI uci = new UCI();
@@ -87,11 +82,7 @@ public class UCIService {
             UCIList.add(uci);
         }
 
-        // save U-C if not exist
-        if (!cocktailExistForUser(userResponseDTO, cocktailDTOWithId))
-        {
-            createUserCocktail(userResponseDTO, cocktailDTOWithId);
-        }
+
         // save to C-I only when it is true
         UCIRepository.saveAll(UCIList);
 

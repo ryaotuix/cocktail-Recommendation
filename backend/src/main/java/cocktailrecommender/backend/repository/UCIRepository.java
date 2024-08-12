@@ -28,4 +28,6 @@ public interface UCIRepository extends JpaRepository<UCI, Long> {
             "SELECT ui.ingredient.ingredientId FROM UserIngredient ui WHERE ui.user.userId = :userId))")
     List<Cocktail> findCocktailsByUserIngredients(@Param("userId") Long userId);
 
+    boolean existsByUserIdAndCocktailId(Long u_id, Long c_id);
+
 }
